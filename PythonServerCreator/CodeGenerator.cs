@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace PythonServerCreator
@@ -18,14 +19,23 @@ namespace PythonServerCreator
         private readonly string functionParamsFiller = "FUNCTION_PARAMS";
         private readonly string filledFunctionsParamsList = "FILLED_FUNCTION_PARAMS_LIST";
         private readonly string functionReturnTypeFiller = "FUNCTION_RETURN_TYPE";
+        private readonly string hostnameParameter = "HOSTNAME";
+        private readonly string portParameter = "PORT";
+
+        private readonly List<string> _filesCopied;
 
         private readonly FunctionDeclaration[] _functionDeclarations;
         private readonly Dictionary<string, string> _typeMap;
+        private readonly IPEndPoint _ipEndPoint;
 
-        public CodeGenerator(FunctionDeclaration[] functionDeclarations, Dictionary<string, string> typeMap)
+        public CodeGenerator(FunctionDeclaration[] functionDeclarations,
+            Dictionary<string, string> typeMap,
+            IPEndPoint ipEndPoint)
         {
             _functionDeclarations = functionDeclarations;
-            _typeMap = typeMap;            
+            _typeMap = typeMap;
+            _filesCopied = new List<string>();
+            _ipEndPoint = ipEndPoint;
         }
 
         public void GenerateServer(string sourceFrameworkPath, string destFrameworkPath)
@@ -33,6 +43,7 @@ namespace PythonServerCreator
             RecursiveCopyStructure(sourceFrameworkPath, destFrameworkPath);
             WriteHandlerFiles(GenerateFunctionHandlers());
             WriteClientFunctionFiles(GenerateClientFunctions());
+            InsertHostnameAndPort();
         }
 
         private void RecursiveCopyStructure(string source, string dest)
@@ -59,6 +70,7 @@ namespace PythonServerCreator
             {
                 string destFilePath = Path.Combine(destDir, Path.GetFileName(file));
                 File.Copy(file, destFilePath);
+                _filesCopied.Add(destFilePath);
             }
         }
 
@@ -161,6 +173,17 @@ namespace PythonServerCreator
                     byte[] codeAsBytes = Encoding.UTF8.GetBytes(generatedClientFunctionCode);
                     functionsFile.Write(codeAsBytes);                    
                 }
+            }
+        }
+
+        private void InsertHostnameAndPort()
+        {
+            foreach (string filePath in _filesCopied)
+            {
+                string code = File.ReadAllText(filePath);
+                code = code.Replace(EncapsulateAsParameter(hostnameParameter), _ipEndPoint.Address.ToString());
+                code = code.Replace(EncapsulateAsParameter(portParameter), _ipEndPoint.Port.ToString());
+                File.WriteAllText(filePath, code);
             }
         }
 

@@ -111,16 +111,29 @@ namespace PythonServerCreator
             }
         }
 
+        private bool IsPortValid(string port, out ushort parsedPort)
+        {
+            return ushort.TryParse(port, out parsedPort);
+        }
+
         private void GenerateServerButton_Click(object sender, EventArgs e)
         {
+            if (IsStringEmpty(HostnameTextbox.Text))
+                return;
+
+            if (!IsPortValid(PortTextbox.Text, out ushort port))
+                return;
+
             FunctionDeclaration[] functionDeclarations = new FunctionDeclaration[AddedFunctionsListBox.Items.Count];
             for (int i = 0; i < AddedFunctionsListBox.Items.Count; i++)
             {
                 functionDeclarations[i] = (FunctionDeclaration)AddedFunctionsListBox.Items[i];
             }
 
-            CodeGenerator cg = new CodeGenerator(functionDeclarations, _typeMap);
+            CodeGenerator cg = new CodeGenerator(functionDeclarations, _typeMap, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(HostnameTextbox.Text), port));
             cg.GenerateServer(_framework_path, Path.Combine(Directory.GetCurrentDirectory(), "GeneratedServer"));
+
+            MessageBox.Show("The server you requested has been successfully generated! You may start working on it :)", "Success", MessageBoxButtons.OK);
         }
     }
 }

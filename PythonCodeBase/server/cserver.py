@@ -36,7 +36,7 @@ class Server:
 
     def run(self) -> None:
         self.__socket.listen()
-
+        print("Server listening on hostname:", self.__ip +":" + self.__port)
         print("Server ready to accept connections")
         while True:
             connection, address = self.__socket.accept()
@@ -51,6 +51,6 @@ class Server:
         self.__protocol.send_result({'result': result}, connection)
 
 
-s = Server("127.0.0.1", 48000)
+s = Server($(HOSTNAME), $(PORT))
 s.open()
 s.run()

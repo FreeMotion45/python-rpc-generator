@@ -44,6 +44,11 @@ namespace PythonServerCreator
             this.AddParameterButton = new System.Windows.Forms.Button();
             this.ReturnTypeCombox = new System.Windows.Forms.ComboBox();
             this.GenerateServerButton = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.HostnameTextbox = new System.Windows.Forms.TextBox();
+            this.PortTextbox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // FunctionNameTextBox
@@ -180,11 +185,57 @@ namespace PythonServerCreator
             this.GenerateServerButton.UseVisualStyleBackColor = true;
             this.GenerateServerButton.Click += new System.EventHandler(this.GenerateServerButton_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(28, 468);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(86, 15);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Server settings:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(28, 519);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 15);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Hostname:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(298, 519);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(32, 15);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Port:";
+            // 
+            // HostnameTextbox
+            // 
+            this.HostnameTextbox.Location = new System.Drawing.Point(99, 516);
+            this.HostnameTextbox.Name = "HostnameTextbox";
+            this.HostnameTextbox.Size = new System.Drawing.Size(193, 23);
+            this.HostnameTextbox.TabIndex = 19;
+            // 
+            // PortTextbox
+            // 
+            this.PortTextbox.Location = new System.Drawing.Point(336, 516);
+            this.PortTextbox.Name = "PortTextbox";
+            this.PortTextbox.Size = new System.Drawing.Size(91, 23);
+            this.PortTextbox.TabIndex = 20;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1157, 450);
+            this.ClientSize = new System.Drawing.Size(1157, 565);
+            this.Controls.Add(this.PortTextbox);
+            this.Controls.Add(this.HostnameTextbox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.GenerateServerButton);
             this.Controls.Add(this.ReturnTypeCombox);
             this.Controls.Add(this.AddParameterButton);
@@ -224,6 +275,11 @@ namespace PythonServerCreator
         private System.Windows.Forms.Button AddParameterButton;
         private System.Windows.Forms.ComboBox ReturnTypeCombox;
         private System.Windows.Forms.Button GenerateServerButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox HostnameTextbox;
+        private System.Windows.Forms.TextBox PortTextbox;
     }
 }
 

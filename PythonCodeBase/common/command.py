@@ -3,8 +3,8 @@ from common.protocol import SimpleProtocol
 from common.json_serializer import JsonSerializer
 
 class AbstractCommand:
-    IP = '127.0.0.1' # Template fill
-    PORT = 48000 # Template fill    
+    IP = $(HOSTNAME)
+    PORT = $(PORT)
 
     def __init__(self, function_name: str) -> None:        
         self.__function_name = function_name
