@@ -36,7 +36,7 @@ class Server:
 
     def run(self) -> None:
         self.__socket.listen()
-        print("Server listening on hostname:", self.__ip +":" + self.__port)
+        print("Server listening on hostname:", self.__ip + ":" + str(self.__port))
         print("Server ready to accept connections")
         while True:
             connection, address = self.__socket.accept()

@@ -181,7 +181,7 @@ namespace PythonServerCreator
             foreach (string filePath in _filesCopied)
             {
                 string code = File.ReadAllText(filePath);
-                code = code.Replace(EncapsulateAsParameter(hostnameParameter), _ipEndPoint.Address.ToString());
+                code = code.Replace(EncapsulateAsParameter(hostnameParameter), $"'{_ipEndPoint.Address.ToString()}'");
                 code = code.Replace(EncapsulateAsParameter(portParameter), _ipEndPoint.Port.ToString());
                 File.WriteAllText(filePath, code);
             }
