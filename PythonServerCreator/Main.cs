@@ -14,7 +14,7 @@ namespace PythonServerCreator
 {
     public partial class Main : Form
     {
-        private readonly string _framework_path = @"C:\Users\emanu\source\repos\PythonServerCreator\PythonCodeBase\";
+        private readonly string _framework_path = @"D:\Local\Programming\C#\python-rpc-generator\PythonCodeBase\";
         private readonly Dictionary<string, string> _typeMap;
 
         public Main()

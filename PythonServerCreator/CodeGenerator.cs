@@ -11,7 +11,7 @@ namespace PythonServerCreator
         public readonly string functionTemplatePath = "GeneratedServer/framework/command_template.py";
         public readonly string functionHandlerTemplatePath = "GeneratedServer/framework/command_handler_template.py";
         public readonly string generatedHandlersPath = "GeneratedServer/server/command_handlers";
-        public readonly string generatedClientFunctionsPath = "GeneratedServer/client/functions";
+        public readonly string generatedClientFunctionsPath = "GeneratedServer/client";
 
         private readonly string functionNameFiller = "FUNCTION_NAME";
         private readonly string stringedFunctionNameFiller = "STRINGED_FUNCTION_NAME";
@@ -131,16 +131,36 @@ namespace PythonServerCreator
             foreach (FunctionDeclaration functionDeclaration in generatedHandlers.Keys)
             {
                 string generatedHandlerCode = generatedHandlers[functionDeclaration];
+
+                if (! Directory.Exists(generatedHandlersPath))
+                {
+                    Directory.CreateDirectory(generatedHandlersPath);
+                }
+
                 File.WriteAllText(Path.Combine(generatedHandlersPath, $"{functionDeclaration.FunctionName}_handler.py"), generatedHandlerCode);
             }
         }
 
         private void WriteClientFunctionFiles(Dictionary<FunctionDeclaration, string> generatedClientFunctions)
         {
-            foreach (FunctionDeclaration functionDeclaration in generatedClientFunctions.Keys)
+            using (FileStream functionsFile = File.Open(Path.Combine(generatedClientFunctionsPath, "functions.py"), FileMode.Append))
             {
-                string generatedClientFunctionCode = generatedClientFunctions[functionDeclaration];
-                File.WriteAllText(Path.Combine(generatedClientFunctionsPath, $"{functionDeclaration.FunctionName}.py"), generatedClientFunctionCode);
+                bool isFirstFunction = true;
+                foreach (FunctionDeclaration functionDeclaration in generatedClientFunctions.Keys)
+                {
+                    string generatedClientFunctionCode;
+                    if (isFirstFunction)
+                    {
+                        generatedClientFunctionCode = generatedClientFunctions[functionDeclaration] + "\n\n";
+                        isFirstFunction = false;
+                    }
+                    else
+                    {
+                        generatedClientFunctionCode = OnlyTakeClassDefinitionFromCode(generatedClientFunctions[functionDeclaration]) + "\n\n";
+                    }
+                    byte[] codeAsBytes = Encoding.UTF8.GetBytes(generatedClientFunctionCode);
+                    functionsFile.Write(codeAsBytes);                    
+                }
             }
         }
 
@@ -160,6 +180,23 @@ namespace PythonServerCreator
                     finalString += new string(vs) + "_";
             }
             return finalString;
+        }
+
+        private string OnlyTakeClassDefinitionFromCode(string code)
+        {
+            string[] lines = code.Replace("\r", "").Split('\n');
+
+            StringBuilder stringBuilder = new StringBuilder();
+            bool functionClassDefinitionStarted = false;
+            foreach (string line in lines)
+            {
+                if (line.StartsWith("class"))
+                    functionClassDefinitionStarted = true;
+                if (functionClassDefinitionStarted)
+                    stringBuilder.Append(line + '\n');
+            }
+
+            return stringBuilder.ToString();
         }
 
         private string EncapsulateAsParameter(string templateParameter)
