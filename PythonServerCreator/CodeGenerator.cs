@@ -68,12 +68,12 @@ namespace PythonServerCreator
             foreach (FunctionDeclaration functionDeclaration in _functionDeclarations)
             {
                 string functionHandlerTemplateCode = File.ReadAllText(functionHandlerTemplatePath);
-                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(stringedFunctionNameFiller, $"\"{functionDeclaration.FunctionName}\"");
-                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(functionNameFiller, ToTitleString(functionDeclaration.FunctionName));
+                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(EncapsulateAsParameter(stringedFunctionNameFiller), $"\"{functionDeclaration.FunctionName}\"");
+                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(EncapsulateAsParameter(functionNameFiller), ToTitleString(functionDeclaration.FunctionName));
 
                 string generatedPythonicFunctionParams = GeneratePythonFunctionParameters(functionDeclaration);
-                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(functionParamsFiller, generatedPythonicFunctionParams);
-                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(functionReturnTypeFiller, _typeMap[functionDeclaration.ReturnType]);
+                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(EncapsulateAsParameter(functionParamsFiller), generatedPythonicFunctionParams);
+                functionHandlerTemplateCode = functionHandlerTemplateCode.Replace(EncapsulateAsParameter(functionReturnTypeFiller), _typeMap[functionDeclaration.ReturnType]);
 
                 functionHandlerCodes[functionDeclaration] = functionHandlerTemplateCode;
             }
@@ -86,14 +86,14 @@ namespace PythonServerCreator
             foreach (FunctionDeclaration functionDeclaration in _functionDeclarations)
             {
                 string functionTemplateCode = File.ReadAllText(functionTemplatePath);
-                functionTemplateCode = functionTemplateCode.Replace(stringedFunctionNameFiller, $"\"{functionDeclaration.FunctionName}\"");
-                functionTemplateCode = functionTemplateCode.Replace(functionNameFiller, ToTitleString(functionDeclaration.FunctionName));
+                functionTemplateCode = functionTemplateCode.Replace(EncapsulateAsParameter(stringedFunctionNameFiller), $"\"{functionDeclaration.FunctionName}\"");
+                functionTemplateCode = functionTemplateCode.Replace(EncapsulateAsParameter(functionNameFiller), ToTitleString(functionDeclaration.FunctionName));
 
                 string generatedFilledParamsList = GenerateFilledParamsList(functionDeclaration);
-                functionTemplateCode = functionTemplateCode.Replace(filledFunctionsParamsList, generatedFilledParamsList);
+                functionTemplateCode = functionTemplateCode.Replace(EncapsulateAsParameter(filledFunctionsParamsList), generatedFilledParamsList);
 
                 string generatedPythonicFunctionParams = GeneratePythonFunctionParameters(functionDeclaration);
-                functionTemplateCode = functionTemplateCode.Replace(functionParamsFiller, generatedPythonicFunctionParams);                
+                functionTemplateCode = functionTemplateCode.Replace(EncapsulateAsParameter(functionParamsFiller), generatedPythonicFunctionParams);                
 
                 functionClientCodes[functionDeclaration] = functionTemplateCode;
             }
@@ -160,6 +160,11 @@ namespace PythonServerCreator
                     finalString += new string(vs) + "_";
             }
             return finalString;
+        }
+
+        private string EncapsulateAsParameter(string templateParameter)
+        {
+            return $"$({templateParameter})";
         }
     }
 }
